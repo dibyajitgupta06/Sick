@@ -1,0 +1,346 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#f3ece4" />
+  <title>Home, Together — care day prototype</title>
+  <style>
+    :root{--ink:#392f2d;--muted:#877b76;--paper:#fffdf9;--cream:#f4eee7;--line:#e9ddd3;--rose:#b96f83;--rose-dark:#965264;--green:#709675;--gold:#c9a56d}
+    *{box-sizing:border-box}body{margin:0;min-height:100vh;background:radial-gradient(ellipse at 8% 4%,#f0ded2 0,transparent 35%),radial-gradient(ellipse at 97% 30%,#e5ebdf 0,transparent 31%),var(--cream);color:var(--ink);font-family:Inter,"Avenir Next",ui-sans-serif,system-ui,-apple-system,sans-serif}
+    button{font:inherit;color:inherit}.app{max-width:1540px;margin:0 auto;padding:22px 26px 30px}.topbar{display:flex;align-items:center;justify-content:space-between;gap:20px;margin-bottom:17px}.brand{display:flex;align-items:center;gap:13px}.brand-icon{width:44px;height:44px;border-radius:15px;background:#ead5d5;color:#9c5e6c;display:grid;place-items:center;font-size:21px;box-shadow:inset 0 0 0 1px #dfc4c2}.kicker{font-size:10px;text-transform:uppercase;letter-spacing:.16em;color:#9c7770;font-weight:800}.title{font-family:Georgia,"Times New Roman",serif;font-size:25px;line-height:1.05;font-weight:500;letter-spacing:-.035em;margin-top:3px}.tagline{font-size:11px;color:#867a74;border:1px solid #ebdfd5;border-radius:99px;padding:9px 13px;background:#fffaf4;white-space:nowrap}.tagline b{color:#b97485;font-weight:700;margin-right:6px}
+    .layout{display:grid;grid-template-columns:minmax(0,1fr) 324px;gap:16px;align-items:start}.map-card,.panel{background:rgba(255,253,249,.91);border:1px solid rgba(226,213,202,.9);border-radius:21px;box-shadow:0 12px 34px #614a3c12,0 2px 5px #614a3c08}.map-card{padding:12px;overflow:hidden}.map-heading{display:flex;justify-content:space-between;align-items:center;padding:3px 5px 10px}.map-heading-left{font-size:10px;font-weight:800;letter-spacing:.15em;text-transform:uppercase;color:#82746f}.room-pill{display:flex;align-items:center;gap:7px;border-radius:99px;padding:7px 10px;background:#fff7f1;border:1px solid #eddfd6;color:#695b56;font-size:10px;font-weight:700}.room-led{width:7px;height:7px;border-radius:50%;background:#bb7b87;box-shadow:0 0 0 3px #f3e2e3}
+    .stage{position:relative;width:100%;aspect-ratio:4/3;overflow:hidden;border-radius:15px;background:#dfc9ae;isolation:isolate;box-shadow:inset 0 0 0 1px #5a43322a;user-select:none;touch-action:none}.stage-bg{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:0;transition:filter .45s}.stage::after{content:"";position:absolute;inset:0;border-radius:inherit;box-shadow:inset 0 0 0 1px #fff7e588;pointer-events:none;z-index:8}.stage-wash{position:absolute;inset:0;background:linear-gradient(180deg,#39282035,transparent 18%,transparent 76%,#39282042);pointer-events:none;z-index:1}.stage-topline{position:absolute;z-index:5;left:14px;top:13px;display:flex;align-items:center;gap:7px;padding:7px 10px;border-radius:10px;background:#211b18a8;color:#fffaf4;font-size:9px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;backdrop-filter:blur(10px)}.stage-topline i{width:6px;height:6px;border-radius:50%;background:#e9ad97;box-shadow:0 0 0 3px #f0c6ad35}.scene-caption{position:absolute;z-index:5;left:14px;bottom:12px;padding:7px 10px;border-radius:9px;color:#fff9f3;background:#241c19a6;font-size:10px;backdrop-filter:blur(9px)}.scene-caption strong{color:#ffe7c1}
+    .marker{position:absolute;z-index:4;transform:translate(-50%,-50%);width:21px;height:21px;border-radius:50%;border:1px solid #fffaf2;background:#b96f83e8;box-shadow:0 0 0 2px #fff7ef88,0 2px 6px #33211d3d;color:#fff;font-size:9px;font-weight:800;display:grid;place-items:center;cursor:pointer;transition:transform .18s,background .18s,opacity .18s}.marker:hover,.marker.active{transform:translate(-50%,-50%) scale(1.08);background:#985369}.marker.done{background:#6f9a78;border-color:#f3fff2}.marker.entry{background:#aa7951}.marker.ensuite{background:#718e87}.marker[hidden]{display:none}.marker-label{position:absolute;top:calc(100% + 5px);left:50%;transform:translateX(-50%);font-size:7px;letter-spacing:.02em;font-weight:700;color:#fffdf8;background:#302723bf;border-radius:6px;padding:3px 5px;white-space:nowrap;opacity:0;transition:opacity .15s;pointer-events:none}.marker:hover .marker-label,.marker.active .marker-label{opacity:1}
+    .avatar{position:absolute;z-index:6;width:19%;aspect-ratio:1/1;background-image:url('assets/walk-sheet.png');background-repeat:no-repeat;background-size:400% 200%;background-position:0% 0%;transform:translate(-50%,-79%);filter:drop-shadow(0 5px 4px #39282055);pointer-events:none;transition:filter .2s}.avatar.walking{filter:drop-shadow(0 7px 5px #39282052);animation:walkBounce .32s ease-in-out infinite alternate}.avatar.facing-left{transform:translate(-50%,-79%) scaleX(-1)}.avatar.facing-up{transform:translate(-50%,-79%)}.avatar.idle{animation:idleBreath 3.2s ease-in-out infinite}.girl-walker{z-index:5;width:15%;background-image:url('assets/her-walk-sheet.png');display:none}.girl-walker.visible{display:block}.girl-walker.walking{animation:walkBounce .42s ease-in-out infinite alternate}.girl-walker.facing-left{transform:translate(-50%,-79%) scaleX(-1)}.her-bed{position:absolute;z-index:5;left:12%;top:26.5%;width:24%;height:29%;background-image:url('assets/her-feed-sheet.png');background-size:200% 100%;background-repeat:no-repeat;background-position:0% 0%;display:none;filter:drop-shadow(0 5px 5px #4d382d1d);pointer-events:none}.her-bed.visible{display:block}.her-bed.open-mouth{background-position:100% 0%}.sleeping-couple{position:absolute;z-index:7;left:2%;top:22%;width:44%;height:auto;object-fit:contain;display:none;pointer-events:none;filter:drop-shadow(0 5px 5px #3b26251c)}.sleeping-couple.visible{display:block;animation:appear .6s ease}.rest-blink{position:absolute;z-index:6;left:17.9%;top:29%;width:4.8%;height:2.5%;border-radius:50%;background:transparent;pointer-events:none}.rest-blink::after{content:"";position:absolute;left:7%;top:47%;width:82%;height:10%;border-radius:99px;background:#54403e;transform:scaleY(0);transform-origin:center;animation:blink 4.2s infinite}.stage.toast-on .toast{opacity:1;transform:translate(-50%,0)}.toast{position:absolute;z-index:10;left:50%;top:15px;transform:translate(-50%,-8px);padding:10px 14px;border-radius:12px;color:#fffaf3;background:#332925e8;box-shadow:0 7px 22px #24191440;font-size:11px;font-weight:600;opacity:0;transition:.22s;pointer-events:none;max-width:88%;text-align:center;backdrop-filter:blur(9px)}
+    @keyframes walkBounce{from{margin-top:0}to{margin-top:-3px}}@keyframes idleBreath{0%,100%{margin-top:0}50%{margin-top:-1.5px}}@keyframes blink{0%,95%,100%{transform:scaleY(0)}96%,98%{transform:scaleY(1)}}
+    .map-footer{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:10px 4px 0;color:#8a7e79;font-size:10px}.map-footer b{font-weight:700;color:#655955}.keys{display:flex;align-items:center;gap:4px;white-space:nowrap}.key{display:inline-grid;place-items:center;min-width:20px;height:20px;padding:0 5px;background:#fffaf5;border:1px solid #e8dcd1;border-radius:6px;box-shadow:0 2px 0 #e5d9cf;color:#71645e;font-size:9px;font-weight:800}
+    .side{display:flex;flex-direction:column;gap:12px}.panel{padding:16px}.panel-head{display:flex;align-items:center;justify-content:space-between;gap:10px}.panel h2{margin:0;font:600 18px/1.15 Georgia,"Times New Roman",serif;letter-spacing:-.02em}.day-chip{font-size:9px;font-weight:800;letter-spacing:.08em;color:#9e6272;background:#f5e6e9;padding:6px 8px;border-radius:99px;white-space:nowrap}.story{margin:8px 0 13px;color:#827671;font-size:10px;line-height:1.5}.mood-row{display:grid;grid-template-columns:46px 1fr;align-items:center;gap:10px;padding:10px;border-radius:14px;background:#fbf3ed;border:1px solid #eee1d7}.portrait{width:46px;height:46px;border-radius:11px;background-image:url('assets/her-feed-sheet.png');background-size:200% 100%;background-position:0% 0%;box-shadow:0 3px 10px #4a34251c;position:relative;overflow:hidden;animation:idleBreath 3.2s ease-in-out infinite}.portrait::after{content:"";position:absolute;left:37%;top:30%;width:27%;height:3px;border-radius:50%;background:#6a4647;transform:scaleY(0);transform-origin:center;animation:blink 4.2s infinite}.mood-title{font-size:10px;font-weight:800;color:#65514c}.mood-sub{margin-top:4px;color:#8a7c75;font-size:9px;line-height:1.4}.progress-head{display:flex;justify-content:space-between;align-items:center;margin-top:13px;font-size:9px;font-weight:800;letter-spacing:.12em;color:#84766f}.progress-head strong{font-size:10px;letter-spacing:0;color:#9b5d70}.progress{height:7px;border-radius:99px;background:#eee5dd;margin:7px 0 11px;overflow:hidden}.progress>span{display:block;height:100%;width:0;background:linear-gradient(90deg,#ce91a0,#b56c84);border-radius:inherit;transition:width .35s}
+    .tasks{display:flex;flex-direction:column;gap:2px}.task{display:grid;grid-template-columns:19px minmax(0,1fr);align-items:center;gap:8px;padding:4px 0;min-height:28px;font-size:10px;color:#655d59;transition:.16s}.task.active{color:#995b6e;font-weight:700}.task.done{color:#9d9690;text-decoration:line-through;text-decoration-color:#b8aaa1}.check{width:16px;height:16px;border:1.5px solid #dfd2c7;border-radius:5px;background:#fffdfa;display:grid;place-items:center;color:white;font-size:10px}.task.done .check{background:#78a280;border-color:#78a280}
+    .action-card{min-height:87px;background:#fff7f4;border:1px solid #f0dce1;border-radius:14px;padding:11px 12px}.action-kicker{font-size:8px;letter-spacing:.16em;font-weight:800;color:#ac7681;text-transform:uppercase}.action-row{display:flex;align-items:center;justify-content:space-between;gap:9px;margin-top:6px}.action-copy{font-size:10px;line-height:1.4;color:#6d5956}.action-btn{flex:none;border:0;border-radius:9px;background:#bb7187;color:white;padding:8px 10px;font-size:9px;font-weight:800;cursor:pointer;box-shadow:0 2px 0 #a35f74;transition:.15s}.action-btn:hover{background:#a95f78;transform:translateY(-1px)}.action-btn:disabled{cursor:default;background:#c8b9ba;box-shadow:none}.control-row{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-top:12px}.dpad{display:grid;grid-template-columns:27px 27px 27px;grid-template-rows:25px 25px;gap:2px}.dpad button{border:1px solid #e9ded4;background:#fffaf5;border-radius:7px;color:#74655e;font-weight:800;cursor:pointer;touch-action:none}.dpad button:hover{background:#f5e5e8;color:#995b70}.dpad .up{grid-column:2}.dpad .left{grid-column:1;grid-row:2}.dpad .down{grid-column:2;grid-row:2}.dpad .right{grid-column:3;grid-row:2}.control-text{text-align:right;color:#928680;font-size:8px;line-height:1.5}.small-note{display:flex;gap:8px;align-items:center;color:#8b7f79;font-size:9px;line-height:1.4}.small-note span{font-size:15px;color:#bd8190}.ending{display:none;margin-top:10px;padding:9px 10px;border:1px solid #dce9dc;background:#f4faf3;border-radius:11px;color:#618269;font-size:10px;line-height:1.4}.ending.show{display:block;animation:appear .35s ease}@keyframes appear{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
+    @media(max-width:1080px){.app{padding:16px}.layout{grid-template-columns:minmax(0,1fr) 292px;gap:12px}.panel{padding:13px}.map-card{padding:9px}}
+    @media(max-width:790px){.layout{grid-template-columns:1fr}.side{display:grid;grid-template-columns:1fr 1fr}.side>.panel:first-child{grid-row:span 2}.app{padding:12px}.title{font-size:22px}}
+    @media(max-width:540px){.tagline{display:none}.side{display:flex}.map-footer{align-items:flex-start;flex-direction:column}.map-footer .keys{align-self:flex-end}.panel{padding:14px}.task{font-size:10px}}
+    .her-bed{top:21%}
+    .avatar.working{filter:drop-shadow(0 7px 6px #39282066);animation:workBounce .42s ease-in-out infinite alternate}
+    .activity-fx{position:absolute;z-index:9;transform:translate(-50%,-105%);align-items:center;gap:8px;min-width:168px;max-width:194px;padding:7px 10px 11px;border:1px solid #fff9f2;border-radius:13px;background:#fffaf3ee;box-shadow:0 7px 22px #39282038;color:#544640;pointer-events:none}
+    .activity-fx[hidden]{display:none}.activity-fx.visible{display:flex;animation:activityPop .2s ease}
+    .fx-icon{width:28px;height:28px;display:grid;place-items:center;flex:none;border-radius:9px;background:#f4e6e5;font-size:17px;animation:fxFloat .42s ease-in-out infinite alternate}
+    .fx-copy{min-width:0;display:flex;flex-direction:column;gap:2px}.fx-copy strong{font-size:9px;line-height:1.2;color:#69534d}.fx-copy small{font-size:8px;line-height:1.2;color:#9a837c;white-space:nowrap}
+    .fx-track{position:absolute;left:9px;right:9px;bottom:5px;height:3px;overflow:hidden;border-radius:9px;background:#efe4dc}.fx-track i{display:block;width:0;height:100%;border-radius:inherit;background:#c17d91}.activity-fx.visible .fx-track i{animation:activityProgress var(--activity-duration,2s) linear forwards}
+    .activity-fx[data-action="cook"] .fx-icon{animation:fxStir .42s ease-in-out infinite alternate}.activity-fx[data-action="dishes"] .fx-icon{animation:fxScrub .2s ease-in-out infinite alternate}.activity-fx[data-action="laundry"] .fx-icon{animation:fxSpin 1.3s linear infinite}.activity-fx[data-action="vacuum"] .fx-icon{animation:fxSweep .38s ease-in-out infinite alternate}.activity-fx[data-action="feed"] .fx-icon{animation:fxFeed .58s ease-in-out infinite alternate}.activity-fx[data-action="serve"] .fx-icon{animation:fxLift .48s ease-in-out infinite alternate}.activity-fx[data-action="fruit"] .fx-icon{animation:fxChop .35s ease-in-out infinite alternate}.activity-fx[data-action="tv"] .fx-icon{animation:fxGlow .8s ease-in-out infinite alternate}
+    @keyframes workBounce{from{transform:translate(-50%,-79%) rotate(-2deg)}to{transform:translate(-50%,-82%) rotate(2deg)}}@keyframes activityPop{from{opacity:0;scale:.92}to{opacity:1;scale:1}}@keyframes activityProgress{from{width:0}to{width:100%}}@keyframes fxFloat{to{transform:translateY(-3px)}}@keyframes fxStir{to{transform:rotate(24deg) translateY(-2px)}}@keyframes fxScrub{to{transform:translateX(4px) rotate(-8deg)}}@keyframes fxSpin{to{transform:rotate(360deg)}}@keyframes fxSweep{to{transform:translateX(4px) rotate(8deg)}}@keyframes fxFeed{to{transform:translate(7px,3px) scale(.94)}}@keyframes fxLift{to{transform:translateY(-4px)}}@keyframes fxChop{to{transform:translateY(3px) rotate(-15deg)}}@keyframes fxGlow{to{filter:brightness(1.4) drop-shadow(0 0 4px #e9bd69)}}
+    .her-bed{top:21%}
+    .night-veil{position:absolute;z-index:8;inset:0;background:linear-gradient(180deg,#10152a70,#20172b58);pointer-events:none;transition:opacity .7s}.night-veil[hidden]{display:none}.stage.lights-out .stage-bg{filter:brightness(.56) saturate(.78)}
+    .tv-playing{position:absolute;z-index:7;left:2.5%;top:47%;width:clamp(200px,40%,356px);height:200px;overflow:hidden;border:2px solid #342922;border-radius:8px;background:#101529;box-shadow:0 0 15px #f5c878bd,0 0 3px 2px #ffffff85;pointer-events:none}.tv-playing[hidden]{display:none}.tv-playing iframe{position:absolute;inset:0;width:100%;height:100%;border:0}.tv-song{position:absolute;z-index:2;left:0;right:0;bottom:0;padding:5px 3px 2px;background:linear-gradient(transparent,#13182be8);color:white;text-shadow:0 1px 2px #17111a;font-size:7px;font-weight:700;white-space:nowrap;text-align:center}
+    .delivery-scene{position:absolute;z-index:7;left:11%;top:62%;width:19%;height:27%;display:flex;align-items:flex-end;justify-content:center;pointer-events:none}.delivery-scene[hidden]{display:none}.courier-figure{width:100%;height:100%;object-fit:contain;object-position:center bottom;animation:courierArrive .6s ease-out}.handoff-bag{position:absolute;left:60%;top:47%;font-size:18px;opacity:0;transform:translate(0,0)}.delivery-scene[data-step="2"] .handoff-bag{opacity:1;animation:carryBagHandoff .9s ease-in-out forwards}.doorbell-ripple{position:absolute;left:67%;top:5%;font-size:15px;opacity:0;transform:scale(.7)}.delivery-scene[data-step="0"] .doorbell-ripple{opacity:1;animation:doorbellPulse .55s ease-in-out infinite alternate}
+    .avatar.carrying::after{content:"🛍️";position:absolute;right:-8%;top:42%;font-size:14px;filter:drop-shadow(0 2px 2px #3a2a2048);animation:fxFloat .55s ease-in-out infinite alternate}
+    .rose-bloom{position:absolute;z-index:6;left:73%;top:87%;transform:translate(-50%,-70%);font-size:19px;filter:drop-shadow(0 2px 3px #4b263c75);animation:roseSway 1.5s ease-in-out infinite alternate}.rose-bloom[hidden]{display:none}
+    .ending.show{display:flex;flex-wrap:wrap;align-items:center;gap:9px}.lights-off-button{border:0;border-radius:9px;background:#6d647d;color:#fff9f1;padding:7px 10px;font-size:9px;font-weight:800;cursor:pointer;box-shadow:0 2px 0 #554c67}.lights-off-button:hover{background:#5a506e}.lights-off-button:disabled{background:#8b8493;box-shadow:none;cursor:default}.lights-off-button[hidden]{display:none}
+    @keyframes courierArrive{from{opacity:0;transform:translate(-22%,8%)}to{opacity:1;transform:translate(0,0)}}@keyframes carryBagHandoff{0%{transform:translate(0,0) scale(.9)}70%{transform:translate(27px,-10px) scale(1.12)}100%{transform:translate(29px,-8px) scale(1)}}@keyframes doorbellPulse{to{transform:scale(1.15);filter:drop-shadow(0 0 5px #ffe3a5)}}@keyframes roseSway{to{transform:translate(-50%,-70%) rotate(6deg)}}
+    .tv-playing{pointer-events:auto}.activity-fx[data-action="juice"] .fx-icon{animation:fxJuice .58s ease-in-out infinite alternate}.activity-fx[data-action="order"] .fx-icon{animation:fxTap .33s ease-in-out infinite alternate}.activity-fx[data-action="rose"] .fx-icon{animation:fxPlant .55s ease-in-out infinite alternate}.activity-fx[data-action="towels"] .fx-icon{animation:fxFold .46s ease-in-out infinite alternate}.activity-fx[data-action="medicine"] .fx-icon{animation:fxPour .48s ease-in-out infinite alternate}.activity-fx[data-action="delivery"] .fx-icon{animation:fxRing .38s ease-in-out infinite alternate}.activity-fx[data-action="escort"] .fx-icon{animation:fxNod .6s ease-in-out infinite alternate}
+    @keyframes fxJuice{to{transform:rotate(160deg) scale(.88)}}@keyframes fxTap{to{transform:translateY(2px) scale(.94)}}@keyframes fxPlant{to{transform:translateY(-3px) rotate(8deg)}}@keyframes fxFold{to{transform:rotate(12deg) scale(.94)}}@keyframes fxPour{to{transform:rotate(18deg) translateY(2px)}}@keyframes fxRing{to{transform:rotate(10deg) scale(1.1)}}@keyframes fxNod{to{transform:translateY(3px)}}
+    /* Action-specific character sprite strips */
+    .her-bed{left:13.5%;top:28%;width:17%;height:20%;background-size:200% 100%}
+    .avatar.action-sprite{width:14.25%;aspect-ratio:3/4;background-size:400% 100%;transform:translate(-50%,-94%)}
+    .avatar.action-sprite.facing-left:not([data-pose="kiss"]){transform:translate(-50%,-94%) scaleX(-1)}
+    .avatar.action-sprite.facing-left[data-pose="kiss"]{transform:translate(-50%,-94%)}
+    .avatar.action-sprite[data-action="cook"]{background-image:url('assets/action-cook.png')}
+    .avatar.action-sprite[data-action="dishes"]{background-image:url('assets/action-dishes.png')}
+    .avatar.action-sprite[data-action="vacuum"]{background-image:url('assets/action-vacuum.png')}
+    .avatar.action-sprite[data-action="laundry"]{background-image:url('assets/action-laundry.png')}
+    .avatar.action-sprite[data-action="fruit"]{background-image:url('assets/action-fruit.png')}
+    .avatar.action-sprite[data-action="juice"]{background-image:url('assets/action-juice.png')}
+    .avatar.action-sprite[data-action="rose"]{background-image:url('assets/action-rose.png')}
+    .avatar.action-sprite[data-action="order"]{background-image:url('assets/action-phone.png')}
+    .avatar.action-sprite[data-action="tv"]{background-image:url('assets/action-remote.png')}
+    .avatar.action-sprite[data-action="medicine"]{background-image:url('assets/action-medicine.png')}
+    .avatar.action-sprite[data-action="towels"]{background-image:url('assets/action-towels.png')}
+    .avatar.action-sprite[data-action="serve"],.avatar.action-sprite[data-action="feed"]{background-image:url('assets/action-feed.png')}
+    .avatar.action-sprite[data-action="arti"]{background-image:url('assets/action-aarti.png')}
+    .avatar.action-sprite[data-pose="kiss"]{background-image:url('assets/action-kiss.png')}
+    .avatar.action-sprite[data-pose="water"]{background-image:url('assets/action-medicine.png')}
+    .avatar.carry-pair{display:none;width:17%;aspect-ratio:3/4;background-image:url('assets/action-carry.png');background-size:400% 100%;transform:translate(-50%,-94%)}
+    .avatar.carry-pair.visible{display:block}
+    .delivery-scene{align-items:flex-end}.courier-figure{width:78%;height:82%;object-position:center bottom}
+    .delivery-handoff{position:absolute;inset:0;background-image:url('assets/action-handoff.png');background-size:400% 100%;background-position:0% 0%;background-repeat:no-repeat;filter:drop-shadow(0 4px 4px #39282044)}.delivery-handoff[hidden]{display:none}
+    .tv-off-button{position:absolute;z-index:3;right:3px;top:3px;width:19px;height:19px;border:1px solid #fff9;border-radius:50%;background:#2b2735d9;color:#fff;font-size:12px;line-height:1;cursor:pointer;box-shadow:0 1px 4px #15101b77}.tv-off-button:hover{background:#9a5e72}
+    .blessing-glow{position:absolute;z-index:7;left:22%;top:36%;font-size:26px;color:#ffe5a1;text-shadow:0 0 8px #fff3b8,0 0 16px #f5c96d;pointer-events:none;animation:blessingPulse .55s ease-in-out infinite alternate}.blessing-glow[hidden]{display:none}@keyframes blessingPulse{to{transform:scale(1.18) rotate(14deg);opacity:.64}}
+    .activity-fx.visible{left:50%!important;top:8%!important;transform:translate(-50%,0)}
+    .activity-fx{display:none!important}
+    .tv-playing .tv-off-button{pointer-events:auto}
+    .sleeping-couple.visible{animation:sleepingBreath 2.1s ease-in-out infinite alternate}
+    @keyframes sleepingBreath{to{transform:translateY(-1px) scale(1.012)}}
+  </style>
+</head>
+<body>
+  <main class="app">
+    <header class="topbar">
+      <div class="brand"><div class="brand-icon" aria-hidden="true">♡</div><div><div class="kicker">a cozy life-sim prototype</div><div class="title">Home, Together</div></div></div>
+      <div class="tagline"><b>✦</b> A little care makes a home</div>
+    </header>
+    <div class="layout">
+      <section class="map-card" aria-label="Whole-apartment game map">
+        <div class="map-heading"><div class="map-heading-left">The whole apartment</div></div>
+        <div class="stage" id="stage" tabindex="0" aria-label="Move around the apartment with WASD or arrow keys. Press E to interact.">
+          <img id="mapImage" class="stage-bg" src="assets/apartment-evening-resting.png" alt="A warm evening dollhouse apartment with bedroom and attached bathroom, lounge, kitchen, dining room, balcony, and visible front entrance" />
+          <div class="stage-wash"></div>
+          <div id="nightVeil" class="night-veil" hidden></div>
+          <div id="tvPlaying" class="tv-playing" hidden><iframe id="billieVideo" title="Billie Eilish — Ocean Eyes" allow="autoplay; encrypted-media; picture-in-picture; web-share"></iframe><div class="tv-song">♫ Billie Eilish · Ocean Eyes</div><button id="tvOffButton" class="tv-off-button" aria-label="Turn off TV" title="Turn off TV">⏻</button></div>
+          <div id="deliveryScene" class="delivery-scene" hidden><img src="assets/delivery-courier.png" alt="Shorter Black delivery courier at the main door" class="courier-figure"><div id="deliveryHandoff" class="delivery-handoff" hidden></div><span id="handoffBag" class="handoff-bag">🛍️</span><span class="doorbell-ripple">🔔</span></div>
+          <div id="roseBloom" class="rose-bloom" hidden aria-label="A rose growing for her">🌹</div>
+          <button class="marker" data-action="medicine" style="left:9%;top:31%" aria-label="Bring water and her usual medicine">✚<span class="marker-label">Water + medicine</span></button>
+          <button class="marker ensuite" data-action="towels" style="left:53%;top:29%" aria-label="Set out a clean towel in the attached bathroom">⌁<span class="marker-label">Fresh towel</span></button>
+          <button class="marker" data-action="tv" style="left:12%;top:65%" aria-label="Play a Billie Eilish song for her on TV">▣<span class="marker-label">Billie Eilish on TV</span></button>
+          <button class="marker" data-action="vacuum" style="left:50%;top:77%" aria-label="Vacuum the lounge">✳<span class="marker-label">Vacuum lounge</span></button>
+          <button class="marker" data-action="order" style="left:54%;top:60%" aria-label="Order chocolates for her">⌕<span class="marker-label">Order chocolates</span></button>
+          <button class="marker" data-action="dishes" style="left:78%;top:23%" aria-label="Wash dishes at the sink">∿<span class="marker-label">Wash dishes</span></button>
+          <button class="marker" data-action="cook" style="left:94%;top:23%" aria-label="Cook a warm bowl of soup">♨<span class="marker-label">Cook soup</span></button>
+          <button class="marker" data-action="fruit" style="left:86%;top:40%" aria-label="Prepare fruit and cake">✿<span class="marker-label">Fruit + cake</span></button>
+          <button class="marker" data-action="juice" style="left:95%;top:45%" aria-label="Make her favorite pomegranate juice">♥<span class="marker-label">Pomegranate juice</span></button>
+          <button class="marker" data-action="laundry" style="left:71%;top:32%" aria-label="Start the washing machine">◌<span class="marker-label">Laundry</span></button>
+          <button class="marker entry" data-action="delivery" style="left:21%;top:79%" aria-label="Answer the door and take the carry bag of chocolates">✉<span class="marker-label">Take the chocolate bag</span></button>
+          <button class="marker entry" data-action="rose" style="left:73%;top:90%" aria-label="Plant a rose for her on the balcony">🌹<span class="marker-label">Grow a rose</span></button>
+          <button class="marker entry" data-action="arti" style="left:67%;top:36%" aria-label="Perform puja aarti at the mandir and bring her the blessing">🪔<span class="marker-label">Puja + aarti</span></button>
+          <button class="marker ensuite" data-action="escort" style="left:46%;top:38%" aria-label="Take her to the attached bathroom">♡<span class="marker-label">Walk her to the ensuite</span></button>
+          <button class="marker" data-action="serve" style="left:37%;top:51%" aria-label="Bring the meal to her bedside">♡<span class="marker-label">Bring her meal</span></button>
+          <button class="marker" data-action="feed" style="left:29%;top:55%" aria-label="Feed her a few gentle bites">☼<span class="marker-label">Feed her</span></button>
+          <button class="marker" data-action="cuddle" style="left:42%;top:53%" aria-label="Cuddle together in bed">♡<span class="marker-label">Cuddle</span></button>
+          <div id="player" class="avatar idle" role="img" aria-label="Your character" style="left:48%;top:48%"></div>
+          <div id="carryPair" class="avatar carry-pair" role="img" aria-label="You carrying her gently toward the bathroom" style="left:30%;top:50%"></div>
+          <div id="activityFx" class="activity-fx" hidden aria-live="polite"><span class="fx-icon" id="fxIcon"></span><span class="fx-copy"><strong id="fxTitle"></strong><small id="fxStep"></small></span><span class="fx-track"><i></i></span></div>
+          <div id="girlWalker" class="avatar girl-walker" role="img" aria-label="Her walking beside you" style="left:31%;top:41%"></div>
+          <div id="herBed" class="her-bed" aria-label="She is sitting up in bed"></div>
+          <div id="blessingGlow" class="blessing-glow" hidden aria-hidden="true">✧</div>
+          <img id="sleepingCouple" class="sleeping-couple" src="assets/couple-sleeping.png" alt="You and her cuddled together asleep under the blanket" />
+          <div id="restBlink" class="rest-blink" aria-hidden="true"></div>
+          <div class="scene-caption"><strong>Everything is close by.</strong> Take it one small thing at a time.</div>
+          <div id="toast" class="toast" role="status" aria-live="polite"></div>
+        </div>
+        <div class="map-footer"><span><b>Tap a marker</b> to walk over, then interact when you're close.</span><span class="keys"><i class="key">W</i><i class="key">A</i><i class="key">S</i><i class="key">D</i> move&nbsp; <i class="key">E</i> interact</span></div>
+      </section>
+      <aside class="side">
+        <section class="panel">
+          <div class="panel-head"><h2>Today, together</h2><span class="day-chip">TAKE IT SLOW</span></div>
+          <p class="story">She’s having a rough period day. Help around the home, carry her to the ensuite, then bring her something warm.</p>
+          <div class="mood-row"><div class="portrait" id="portrait" role="img" aria-label="Her face, tired and a little sad"></div><div><div class="mood-title" id="moodTitle">She’s resting</div><div class="mood-sub" id="moodSub">A little pale, tired, and uncomfortable. Keep things gentle.</div></div></div>
+          <div class="progress-head"><span>CARE METER</span><strong id="progressCount">0 / 13</strong></div>
+          <div class="progress"><span id="progressFill"></span></div>
+          <div class="tasks" id="tasks"></div>
+          <div class="ending" id="ending"><span id="endingCopy">The little things are done. Come curl up beside her for a quiet cuddle. ♡</span><button id="lightsOffButton" class="lights-off-button" hidden>Turn off the lights ☾</button></div>
+        </section>
+        <section class="panel">
+          <div class="action-card"><div class="action-kicker">Nearby</div><div class="action-row"><div class="action-copy" id="actionCopy">Wander around the apartment and check on her.</div><button class="action-btn" id="interactBtn" disabled>Nothing nearby</button></div></div>
+          <div class="control-row"><div class="dpad" aria-label="Movement controls"><button class="up" data-dir="up" aria-label="Move up">↑</button><button class="left" data-dir="left" aria-label="Move left">←</button><button class="down" data-dir="down" aria-label="Move down">↓</button><button class="right" data-dir="right" aria-label="Move right">→</button></div><div class="control-text">WASD or arrows to move<br/>E or tap to interact</div></div>
+        </section>
+        <section class="panel"><div class="small-note"><span>♡</span><span>A gentle little story about showing up for someone you love.</span></div></section>
+      </aside>
+    </div>
+  </main>
+  <script>
+    const tasks=[
+      {id:'cook',text:'Cook a warm bowl of soup',room:'Kitchen'},
+      {id:'fruit',text:'Prepare fruit and cake',room:'Kitchen'},
+      {id:'juice',text:'Make her favorite pomegranate juice',room:'Kitchen'},
+      {id:'order',text:'Order chocolates for her',room:'Dining'},
+      {id:'delivery',text:'Answer the door and take the chocolates',room:'Main door'},
+      {id:'dishes',text:'Wash the dishes',room:'Kitchen'},
+      {id:'laundry',text:'Start the washing machine',room:'Laundry nook'},
+      {id:'vacuum',text:'Vacuum the lounge',room:'Lounge'},
+      {id:'rose',text:'Plant a rose for her',room:'Balcony'},
+      {id:'towels',text:'Set out a clean towel',room:'Ensuite'},
+      {id:'medicine',text:'Bring water and her usual medicine',room:'Bedroom'},
+      {id:'tv',text:'Play Billie Eilish for her',room:'Lounge'},
+      {id:'arti',text:'Perform aarti at the mandir and share the blessing',room:'Mandir'},
+      {id:'escort',text:'Carry her to the attached bathroom',room:'Bedroom'},
+      {id:'serve',text:'Bring her meal to the bedside',room:'Bedroom'},
+      {id:'feed',text:'Feed her a few gentle bites',room:'Bedroom'}
+    ];
+    const zones={
+      medicine:{x:9,y:31,r:6,label:'Bring water and her usual medicine',say:'Water and her usual medicine are within reach.'},
+      towels:{x:53,y:29,r:6,label:'Set out a clean towel in the attached ensuite',say:'A clean towel is ready in the ensuite.'},
+      tv:{x:12,y:65,r:7,label:'Play a Billie Eilish song for her on TV',say:'Billie Eilish plays softly while she rests.'},
+      vacuum:{x:50,y:77,r:8,label:'Vacuum the lounge rug',say:'The lounge feels fresh and tidy.'},
+      order:{x:54,y:60,r:6,label:'Order chocolates for her',say:'Her chocolates are on the way.'},
+      dishes:{x:78,y:23,r:5,label:'Wash up the dishes at the sink',say:'The dishes are rinsed and stacked to dry.'},
+      cook:{x:94,y:23,r:5,label:'Cook a warm bowl of soup',say:'A warm bowl of soup is ready.'},
+      fruit:{x:86,y:40,r:5,label:'Prepare fruit and a little cake',say:'Fruit and cake are set on a plate.'},
+      juice:{x:95,y:45,r:5,label:'Make her favorite pomegranate juice',say:'A fresh glass of pomegranate juice is ready for her.'},
+      laundry:{x:71,y:32,r:5,label:'Start a load in the washing machine',say:'The washing machine starts its quiet cycle.'},
+      delivery:{x:21,y:79,r:6,label:'Answer the door and take the carry bag of chocolates',say:'You take the chocolate carry bag from the courier.'},
+      rose:{x:73,y:90,r:6,label:'Plant a rose for her on the balcony',say:'A little rose is growing for her by the balcony rail.'},
+      arti:{x:67,y:36,r:6,label:'Perform aarti at the mandir and bring her the blessing',say:'You bring the aarti blessing to her, then offer her water.'},
+      escort:{x:46,y:38,r:6,label:'Carry her gently to the attached bathroom',say:'You carry her safely to the ensuite, then wait just outside.'},
+      serve:{x:37,y:51,r:6,label:'Bring the warm meal to her bedside',say:'You settle the soup, fruit and water by her bed.'},
+      feed:{x:29,y:55,r:5.5,label:'Feed her a few gentle bites',say:'She opens her mouth for a little spoonful.'},
+      cuddle:{x:42,y:53,r:6.5,label:'Get into bed and cuddle',say:'You cuddle close under the blanket, and you both drift into a peaceful sleep.'}
+    };
+    const paths={
+      vacuum:[{x:50,y:50},{x:50,y:77}],
+      delivery:[{x:50,y:50},{x:50,y:80},{x:21,y:79}],
+      tv:[{x:50,y:50},{x:50,y:82},{x:12,y:82},{x:12,y:65}],
+      cook:[{x:60,y:22},{x:94,y:22},{x:94,y:23}],
+      juice:[{x:60,y:32},{x:95,y:32},{x:95,y:45}],
+      fruit:[{x:60,y:32},{x:86,y:32},{x:86,y:40}],
+      dishes:[{x:60,y:30},{x:78,y:23}],
+      laundry:[{x:60,y:30},{x:71,y:32}],
+      rose:[{x:52,y:80},{x:73,y:90}],
+      arti:[{x:67,y:36}],
+      cuddle:[{x:50,y:50},{x:50,y:45},{x:42,y:53}]
+    };
+    const actionAnimations={
+      cook:{title:'Cooking warm soup',steps:[['🥕','Chop the vegetables'],['🥄','Stir the soup'],['♨️','Let it simmer'],['🍲','Lift the warm bowl']]},
+      fruit:{title:'Preparing fruit and cake',steps:[['🍓','Slice fresh fruit'],['🍇','Arrange the plate'],['🍰','Add a little cake']]},
+      juice:{title:'Making pomegranate juice',steps:[['🔴','Open the pomegranate'],['💎','Separate the ruby seeds'],['🥤','Blend a fresh glass'],['🧊','Serve it chilled']]},
+      order:{title:'Ordering chocolates for her',steps:[['📱','Choose her chocolates'],['♡','Place the order'],['⌛','Wait for the courier']]},
+      delivery:{title:'Receiving her chocolate delivery',steps:[['🔔','The doorbell rings'],['🧑🏻‍💼','The courier arrives'],['🛍️','Take the carry bag'],['🍫','Bring the chocolates inside']]},
+      dishes:{title:'Washing the dishes',steps:[['🧽','Wet the sponge'],['🍽️','Scrub each plate'],['💧','Rinse and set to dry']]},
+      laundry:{title:'Starting the laundry',steps:[['🧺','Load the clothes'],['🫧','Add detergent'],['◌','Start the wash']]},
+      vacuum:{title:'Freshening the lounge',steps:[['🧹','Vacuum along the rug'],['✳️','Reach the corners'],['♡','Tidy the room']]},
+      rose:{title:'Planting a rose for her',steps:[['🪴','Prepare the balcony pot'],['🌱','Plant a little rose'],['💧','Water it gently'],['🌹','Leave it blooming for her']]},
+      towels:{title:'Setting out a fresh towel',steps:[['🧺','Fold a clean towel'],['⌁','Place it in the ensuite']]},
+      medicine:{title:'Bringing her medicine',steps:[['🥛','Pour a glass of water'],['✚','Set out her usual medicine']]},
+      tv:{title:'Playing Billie Eilish for her',steps:[['▣','Turn on the TV'],['♪','Choose Billie Eilish'],['♫','Play “Ocean Eyes” softly']]},
+      escort:{title:'Lifting her gently',steps:[['♡','Help her sit up'],['🫶','Lift her into your arms'],['🚶','Carry her securely'],['🚪','Head to the ensuite']]},
+      serve:{title:'Bringing her meal to bed',steps:[['🍲','Carry the warm tray'],['♡','Set it beside her']]},
+      feed:{title:'Feeding her gently',steps:[['🥄','Scoop a warm spoonful'],['♡','She opens her mouth'],['🍲','Feed her slowly'],['♡','Kiss her forehead softly']]},
+      arti:{title:'Puja and aarti for her',steps:[['🪔','Circle the lit thali at the mandir'],['🚶','Carry the aarti to her bedside'],['✧','Gently share the blessing'],['🥛','Offer her a glass of water']]},
+      cuddle:{title:'Cuddling close',steps:[['♡','Get cozy side by side'],['🛏️','Settle under the blanket'],['☾','Drift off to sleep']]}
+    };
+    const activityDuration=5000;
+    const actionSprites={cook:'cook',dishes:'dishes',vacuum:'vacuum',laundry:'laundry',fruit:'fruit',juice:'juice',order:'phone',tv:'remote',medicine:'medicine',towels:'towels',serve:'feed',feed:'feed',rose:'rose',arti:'aarti'};
+    const state=Object.fromEntries(tasks.map(t=>[t.id,false]));state.cuddle=false;state.lightsOff=false;
+    const stage=document.getElementById('stage'),mapImage=document.getElementById('mapImage'),player=document.getElementById('player'),girl=document.getElementById('girlWalker'),carryPair=document.getElementById('carryPair'),herBed=document.getElementById('herBed'),portrait=document.getElementById('portrait');
+    const actionCopy=document.getElementById('actionCopy'),interactBtn=document.getElementById('interactBtn'),activityFx=document.getElementById('activityFx'),fxIcon=document.getElementById('fxIcon'),fxTitle=document.getElementById('fxTitle'),fxStep=document.getElementById('fxStep');
+    const deliveryScene=document.getElementById('deliveryScene'),deliveryHandoff=document.getElementById('deliveryHandoff'),handoffBag=document.getElementById('handoffBag'),roseBloom=document.getElementById('roseBloom'),tvPlaying=document.getElementById('tvPlaying'),billieVideo=document.getElementById('billieVideo'),tvOffButton=document.getElementById('tvOffButton'),blessingGlow=document.getElementById('blessingGlow'),nightVeil=document.getElementById('nightVeil'),lightsOffButton=document.getElementById('lightsOffButton'),endingCopy=document.getElementById('endingCopy');
+    let p={x:43,y:48},g={x:40,y:42},held=new Set(),target=null,route=[],nearest=null,mode='resting',last=performance.now(),toastTimer=0,walkFrame=0,frameClock=0,activityTimer=0,activityStepTimer=0,activeAction=null,activityStepIndex=0,activityPath=[],activityPathIndex=0,activityFrameClock=0,tvOn=false;
+    const speed=188, girlSpeed=128;
+    const dirs={w:'up',arrowup:'up',s:'down',arrowdown:'down',a:'left',arrowleft:'left',d:'right',arrowright:'right'};
+    function renderTasks(){
+      const list=document.getElementById('tasks');list.innerHTML='';
+      tasks.forEach((t,i)=>{const el=document.createElement('div');el.className='task'+(state[t.id]?' done':'')+(!state[t.id]&&tasks.slice(0,i).every(q=>state[q.id])?' active':'');el.innerHTML=`<span class="check">${state[t.id]?'✓':''}</span><span>${t.text}</span>`;list.appendChild(el)});
+      const n=tasks.filter(t=>state[t.id]).length;document.getElementById('progressCount').textContent=`${n} / ${tasks.length}`;document.getElementById('progressFill').style.width=`${n/tasks.length*100}%`;
+      const ending=document.getElementById('ending');ending.classList.toggle('show',n===tasks.length);endingCopy.textContent=state.cuddle?(state.lightsOff?'You both drift off in the soft evening dark. ♡':'Together under the blanket, you both drift into a peaceful sleep. ♡'):'The little things are done. Come curl up beside her for a quiet cuddle. ♡';lightsOffButton.hidden=!state.cuddle;lightsOffButton.disabled=state.lightsOff;lightsOffButton.textContent=state.lightsOff?'Lights are off ☾':'Turn off the lights ☾';
+      document.querySelectorAll('.marker').forEach(el=>{const id=el.dataset.action;const done=state[id]||false;el.classList.toggle('done',done);});
+    }
+    function blocked(x,y){return false}
+    function nearPoint(x,y,z){const rect=stage.getBoundingClientRect();return Math.hypot((x-z.x)*rect.width/100,(y-z.y)*rect.height/100)<z.r*rect.width/100}
+    function updateAvatar(el,pos,walking,frame,row,dir){
+      el.style.left=pos.x+'%';el.style.top=pos.y+'%';el.classList.toggle('walking',walking);el.classList.toggle('idle',!walking);
+      el.classList.toggle('facing-left',dir==='left');el.classList.toggle('facing-up',dir==='up');
+      const fx=frame*100/3,fy=row?100:0;el.style.backgroundPosition=`${fx}% ${fy}%`;
+    }
+    function refresh(){
+      const carryingVisual=activeAction==='escort'||mode==='carrying'||mode==='carryingBack',handoffVisual=activeAction==='delivery'&&activityStepIndex>=1;
+      player.style.display=mode==='sleeping'||carryingVisual||activeAction==='delivery'||activeAction==='cuddle'?'none':'';player.dataset.action=activeAction||'';player.dataset.pose=activeAction==='feed'&&activityStepIndex===3?'kiss':activeAction==='arti'&&activityStepIndex===3?'water':'';player.classList.toggle('action-sprite',Boolean(activeAction&&actionSprites[activeAction]));
+      updateAvatar(player,p,!activeAction&&(held.size>0||Boolean(target)),walkFrame,player.dataset.row==='1'?1:0,player.dataset.dir||'down');player.classList.toggle('working',Boolean(activeAction));
+      girl.classList.remove('visible');carryPair.classList.toggle('visible',carryingVisual);if(carryingVisual)updateAvatar(carryPair,p,(mode==='carrying'||mode==='carryingBack')&&(held.size>0||Boolean(target))||Boolean(activeAction),walkFrame,0,player.dataset.dir||'down');
+      const sitting=mode==='sitting';herBed.classList.toggle('visible',sitting);document.getElementById('sleepingCouple').classList.toggle('visible',mode==='sleeping'||activeAction==='cuddle');document.getElementById('restBlink').style.display=mode==='resting'&&activeAction!=='escort'&&activeAction!=='cuddle'?'block':'none';
+      const nextBg=mode==='resting'&&activeAction!=='escort'&&activeAction!=='cuddle'?'assets/apartment-evening-resting.png':'assets/apartment-evening-empty.png';if(!mapImage.src.endsWith(nextBg))mapImage.src=nextBg;
+      if(activeAction){const anchor=zones[activeAction]||p;activityFx.dataset.action=activeAction;activityFx.style.left=`${Math.min(88,Math.max(12,anchor.x))}%`;activityFx.style.top=`${Math.max(16,anchor.y-9)}%`;activityFx.hidden=false;activityFx.classList.add('visible')}else{activityFx.hidden=true;activityFx.classList.remove('visible')}
+      roseBloom.hidden=!state.rose;deliveryScene.hidden=activeAction!=='delivery';deliveryHandoff.hidden=!handoffVisual;handoffBag.hidden=handoffVisual;const courierFigure=deliveryScene.querySelector('.courier-figure');courierFigure.hidden=handoffVisual;if(activeAction==='delivery'){deliveryScene.dataset.step=String(activityStepIndex);deliveryHandoff.style.backgroundPosition=`${walkFrame*100/3}% 0%`}
+      tvPlaying.hidden=!(tvOn||activeAction==='tv')||mode==='sleeping'||state.lightsOff;tvOffButton.hidden=!tvOn;nightVeil.hidden=!state.lightsOff;stage.classList.toggle('lights-out',state.lightsOff);
+      blessingGlow.hidden=!(activeAction==='arti'&&activityStepIndex>=2);const allCareDone=tasks.every(t=>state[t.id]);const carryingMode=mode==='carrying'||mode==='carryingBack'||mode==='private';document.querySelectorAll('.marker').forEach(el=>{const id=el.dataset.action;let available=!activeAction&&!carryingMode&&!state[id];if(id==='tv')available=!activeAction&&!carryingMode&&mode!=='sleeping'&&!state.lightsOff&&(!state.tv||!tvOn);if(id==='delivery')available=!activeAction&&!carryingMode&&state.order&&!state.delivery;if(id==='escort')available=!activeAction&&!carryingMode&&!state.escort&&(mode==='resting'||mode==='sitting');if(id==='serve')available=!activeAction&&!carryingMode&&state.cook&&state.fruit&&state.juice&&state.medicine&&!state.serve;if(id==='feed')available=!activeAction&&!carryingMode&&state.serve&&!state.feed&&mode==='sitting';if(id==='cuddle')available=!activeAction&&!carryingMode&&allCareDone&&!state.cuddle;el.hidden=!available;if(id==='tv'){el.setAttribute('aria-label',state.tv?'Turn the TV on for her':'Play a Billie Eilish song for her');el.querySelector('.marker-label').textContent=state.tv?'Turn the TV on':'Billie Eilish on TV'}});
+      const candidates=Object.entries(zones).filter(([id])=>{
+        if(activeAction||carryingMode)return false;
+        if(id==='cuddle')return tasks.every(t=>state[t.id])&&!state.cuddle;
+        if(id==='tv')return !state.tv||!tvOn;
+        if(id==='feed')return state.serve&&!state.feed&&mode==='sitting';
+        if(id==='serve')return state.cook&&state.fruit&&state.juice&&state.medicine&&!state.serve&&mode!=='carrying';
+        if(id==='escort')return !state.escort&&(mode==='resting'||mode==='sitting');
+        if(id==='delivery')return state.order&&!state.delivery;
+        return !state[id];
+      }).map(([id,z])=>({id,z,d:distancePx(p,z)})).filter(v=>v.d<zones[v.id].r*stage.getBoundingClientRect().width/100).sort((a,b)=>a.d-b.d);
+      nearest=candidates[0]?.id||null;
+      const text=activeAction?'':mode==='private'?'She’s ready to leave the ensuite. Use the button to pick her up, then carry her back to bed.':mode==='carrying'?'You’re carrying her to the ensuite. Use WASD or the arrows.':mode==='carryingBack'?'You’re carrying her back. Guide her to the bedside with WASD or the arrows.':nearest?zones[nearest].label:'Walk around and look for a glowing marker.';
+      actionCopy.textContent=text;
+      const cuddleReady=allCareDone&&!state.cuddle&&!carryingMode&&mode!=='sleeping';const enabled=mode==='private'||cuddleReady||(Boolean(nearest)&&!(nearest==='serve'&&!(state.cook&&state.fruit&&state.juice&&state.medicine)));
+      interactBtn.disabled=Boolean(activeAction)||!enabled;interactBtn.textContent=activeAction?'In progress…':mode==='private'?'Carry her back to bed':cuddleReady?'Cuddle & sleep':nearest?(nearest==='cuddle'?'Get cozy':nearest==='escort'?'Carry her':nearest==='tv'&&state.tv?'Turn TV on':'Interact · E'):'Nothing nearby';
+      document.querySelectorAll('.marker').forEach(el=>el.classList.toggle('active',el.dataset.action===nearest));
+      document.getElementById('moodTitle').textContent=mode==='resting'?'She’s resting':mode==='carrying'?'You’re carrying her':mode==='carryingBack'?'Carrying her back to bed':mode==='private'?'She’s in the ensuite':mode==='sitting'?'She’s sitting up':mode==='sleeping'?'Sleeping together':'Feeling cared for';
+      document.getElementById('moodSub').textContent=mode==='resting'?'Sad, tired, and uncomfortable. Keep things gentle.':mode==='carrying'?'She rests in your arms while you guide her to the attached bathroom.':mode==='carryingBack'?'Guide her gently back to the bed with WASD or the arrow keys.':mode==='private'?'She’s finished in the ensuite. Pick her up and carry her back to bed when you’re ready.':mode==='sitting'?'She’s upright in bed, ready for a few bites.':mode==='sleeping'?'You both drift off together beneath the blanket.':'She can rest now; you’re beside her.';
+    }
+    function distancePx(a,z){const r=stage.getBoundingClientRect();return Math.hypot((a.x-z.x)*r.width/100,(a.y-z.y)*r.height/100)}
+    function showToast(message){const el=document.getElementById('toast');el.textContent=message;stage.classList.add('toast-on');clearTimeout(toastTimer);toastTimer=setTimeout(()=>stage.classList.remove('toast-on'),2400)}
+    function setTvPlayback(on){
+      tvOn=on;tvPlaying.hidden=!on;
+      if(!on){billieVideo.src='about:blank';return}
+      const params=new URLSearchParams({autoplay:'1',controls:'0',playsinline:'1',rel:'0',mute:'0'});
+      if(location.protocol==='http:'||location.protocol==='https:')params.set('origin',location.origin);
+      billieVideo.src=`https://www.youtube.com/embed/viimfQi_pUw?${params.toString()}`;
+    }
+    function ringDoorbell(){try{const AudioContextClass=window.AudioContext||window.webkitAudioContext;if(!AudioContextClass)return;const audio=new AudioContextClass(),volume=audio.createGain();volume.gain.setValueAtTime(.055,audio.currentTime);volume.connect(audio.destination);[[784,0],[659,.3]].forEach(([hz,delay])=>{const tone=audio.createOscillator(),envelope=audio.createGain();tone.type='sine';tone.frequency.value=hz;tone.connect(envelope);envelope.connect(volume);envelope.gain.setValueAtTime(.001,audio.currentTime+delay);envelope.gain.exponentialRampToValueAtTime(.32,audio.currentTime+delay+.03);envelope.gain.exponentialRampToValueAtTime(.001,audio.currentTime+delay+.24);tone.start(audio.currentTime+delay);tone.stop(audio.currentTime+delay+.26)});setTimeout(()=>audio.close(),1200)}catch{}}
+    function startActivity(id,onComplete){
+      const sequence=actionAnimations[id];if(!sequence||activeAction)return;
+      activeAction=id;activityStepIndex=0;walkFrame=0;activityFrameClock=0;activityPath=[];activityPathIndex=0;target=null;route=[];held.clear();activityFx.dataset.action=id;activityFx.style.setProperty('--activity-duration',`${activityDuration}ms`);
+      if(id==='escort'){p={x:27,y:49};player.dataset.dir='right'}
+      if(id==='serve'||id==='feed'){p={x:id==='feed'?34:36,y:54};player.dataset.dir='left';player.dataset.row='0'}
+      if(id==='vacuum')activityPath=[{x:45,y:77},{x:34,y:76},{x:29,y:68},{x:41,y:65},{x:48,y:72}];
+      if(id==='feed'){herBed.classList.remove('open-mouth');portrait.style.backgroundPosition='0% 0%'}
+      if(id==='delivery'){deliveryScene.hidden=false;deliveryScene.dataset.step='0';ringDoorbell()}
+      if(id==='tv')setTvPlayback(true);
+      function showStep(){const [icon,detail]=sequence.steps[activityStepIndex];fxIcon.textContent=icon;fxTitle.textContent=sequence.title;fxStep.textContent=detail;player.dataset.action=id;player.dataset.pose=id==='feed'&&activityStepIndex===3?'kiss':id==='arti'&&activityStepIndex===3?'water':'';if(id==='delivery'){deliveryScene.dataset.step=String(activityStepIndex)}if(id==='feed'){const mouthOpen=activityStepIndex===1||activityStepIndex===2;herBed.classList.toggle('open-mouth',mouthOpen);portrait.style.backgroundPosition=mouthOpen?'100% 0%':'0% 0%'}if(id==='arti'&&activityStepIndex>=1&&!activityPath.length){activityPath=[{x:55,y:38},{x:43,y:44},{x:33,y:51}];activityPathIndex=0}}
+      showStep();activityFx.hidden=false;activityFx.classList.add('visible');
+      const stepMs=activityDuration/sequence.steps.length;
+      activityStepTimer=setInterval(()=>{activityStepIndex=Math.min(activityStepIndex+1,sequence.steps.length-1);showStep()},stepMs);
+      activityTimer=setTimeout(()=>{clearInterval(activityStepTimer);clearTimeout(activityTimer);activeAction=null;activityPath=[];activityFx.classList.remove('visible');activityFx.hidden=true;player.dataset.pose='';if(id==='feed'){herBed.classList.remove('open-mouth');portrait.style.backgroundPosition='0% 0%'}if(id==='delivery'){deliveryScene.hidden=true;deliveryHandoff.hidden=true;handoffBag.hidden=false;deliveryScene.querySelector('.courier-figure').hidden=false}if(id==='arti')blessingGlow.hidden=true;onComplete()},activityDuration);
+      refresh();
+    }
+    function doAction(id){
+      if(activeAction)return;
+      if(id==='tv'&&state.tv){setTvPlayback(!tvOn);refresh();showToast(tvOn?'Billie Eilish is playing softly.':'The TV is off.');return}
+      if(id==='escort'){
+        if(state.escort||(mode!=='resting'&&mode!=='sitting'))return;
+        startActivity('escort',()=>{mode='carrying';target=null;route=[];showToast('You’re carrying her gently. Use WASD or the arrows to take her to the attached bathroom.');refresh()});return;
+      }
+      if(id==='cuddle'){
+        if(!tasks.every(t=>state[t.id])){showToast('Finish the little things, then come back for a cuddle.');return}
+        startActivity('cuddle',()=>{state.cuddle=true;mode='sleeping';target=null;route=[];held.clear();setTvPlayback(false);renderTasks();showToast(zones.cuddle.say);refresh()});return;
+      }
+      if(!id||!zones[id])return;
+      if(id==='serve'&&(!state.cook||!state.fruit||!state.juice||!state.medicine)){showToast('Prepare soup, fruit, pomegranate juice and water first.');return}
+      if(id==='delivery'&&!state.order){showToast('Order the chocolates first, then answer the door.');return}
+      if(id==='feed'&&!state.serve){showToast('Bring her meal to the bedside first.');return}
+      if(state[id])return;
+      startActivity(id,()=>{
+        if(id==='feed'){state.feed=true;renderTasks();showToast(zones.feed.say);refresh();return}
+        state[id]=true;if(id==='arti')state.medicine=true;
+        if(id==='serve'){mode='sitting';herBed.classList.add('visible');portrait.style.backgroundPosition='0% 0%'}
+        renderTasks();showToast(zones[id].say);refresh();
+      });
+    }
+    function beginCarryBack(){if(mode!=='private')return;mode='carryingBack';p={x:46,y:34};target=null;route=[];held.clear();player.dataset.dir='left';showToast('You gently lift her. Carry her back to bed with WASD or the arrows.');refresh()}
+    function interact(){if(mode==='carrying'||mode==='carryingBack'||mode==='sleeping')return;if(mode==='private'){beginCarryBack();return}if(tasks.every(t=>state[t.id])&&!state.cuddle){goTo('cuddle');return}if(nearest&&!activeAction)doAction(nearest)}
+    function moveTowardTarget(dt){if(!target)return false;const r=stage.getBoundingClientRect(),dx=(target.x-p.x)*r.width/100,dy=(target.y-p.y)*r.height/100,d=Math.hypot(dx,dy);if(d<4){target=route.length?route.shift():null;return Boolean(target)}const step=Math.min(d,speed*dt),nx=p.x+dx/d*step/r.width*100,ny=p.y+dy/d*step/r.height*100;if(!blocked(nx,ny)){p={x:nx,y:ny};player.dataset.dir=Math.abs(dx)>Math.abs(dy)?(dx<0?'left':'right'):(dy<0?'up':'down');player.dataset.row=Math.abs(dx)>Math.abs(dy)?'1':'0'}else{target=null;route=[]}return true}
+    function moveAlongActivityPath(dt){if(activityPathIndex>=activityPath.length)return false;const z=activityPath[activityPathIndex],r=stage.getBoundingClientRect(),dx=(z.x-p.x)*r.width/100,dy=(z.y-p.y)*r.height/100,d=Math.hypot(dx,dy);if(d<2.5){activityPathIndex++;return activityPathIndex<activityPath.length}const step=Math.min(d,speed*.85*dt),nx=p.x+dx/d*step/r.width*100,ny=p.y+dy/d*step/r.height*100;p={x:nx,y:ny};player.dataset.dir=Math.abs(dx)>Math.abs(dy)?(dx<0?'left':'right'):(dy<0?'up':'down');player.dataset.row=Math.abs(dx)>Math.abs(dy)?'1':'0';return true}
+    function frame(now){
+      const dt=Math.min((now-last)/1000,.04);last=now;let dx=0,dy=0;if(mode!=='sleeping'&&!activeAction){if(held.has('left'))dx--;if(held.has('right'))dx++;if(held.has('up'))dy--;if(held.has('down'))dy++}
+      let walking=false;const r=stage.getBoundingClientRect();
+      if(activeAction&&activityPath.length)walking=moveAlongActivityPath(dt);
+      else if(!activeAction&&(dx||dy)){target=null;route=[];const len=Math.hypot(dx,dy),nx=Math.max(3,Math.min(97,p.x+dx/len*speed*dt/r.width*100)),ny=Math.max(4,Math.min(96,p.y+dy/len*speed*dt/r.height*100));if(!blocked(nx,ny))p={x:nx,y:ny};player.dataset.dir=dx<0?'left':dx>0?'right':dy<0?'up':'down';player.dataset.row=(dx!==0?'1':'0');walking=true}
+      else if(!activeAction&&moveTowardTarget(dt)){walking=true}
+      if(walking||activeAction){frameClock+=dt;if(frameClock>.18){walkFrame=(walkFrame+1)%4;frameClock=0}}else{walkFrame=0}
+      if(mode==='carrying'&&distancePx(p,{x:46,y:34})<4.2){state.escort=true;mode='private';target=null;route=[];held.clear();renderTasks();showToast('She’s in the attached bathroom. When she’s ready, use “Carry her back to bed.”');refresh()}
+      if(mode==='carryingBack'&&distancePx(p,{x:34,y:53})<4.2){mode='resting';p={x:34,y:53};target=null;route=[];held.clear();renderTasks();showToast('You’ve settled her safely back on the bed under the blanket.');refresh()}
+      refresh();requestAnimationFrame(frame);
+    }
+    function goTo(id){
+      if(activeAction)return;
+      const z=zones[id];if(!z)return;
+      if(id==='cuddle'&&!tasks.every(t=>state[t.id])){showToast('One last little thing, then it’s cuddle time.');return}
+      const r=stage.getBoundingClientRect(),dx=(p.x-z.x)*r.width/100,dy=(p.y-z.y)*r.height/100,d=Math.hypot(dx,dy);
+      if(d<z.r*r.width/100){doAction(id);return}
+      if(paths[id]?.length){route=[...paths[id]];target=route.shift()}else{const margin=z.r*.42;target={x:z.x+(d?dx/d*margin:0),y:z.y+(d?dy/d*margin:0)}}showToast('Walking over…');
+    }
+    document.querySelectorAll('.marker').forEach(el=>el.addEventListener('click',()=>goTo(el.dataset.action)));
+    interactBtn.addEventListener('click',interact);
+    lightsOffButton.addEventListener('click',()=>{if(!state.cuddle||state.lightsOff)return;state.lightsOff=true;setTvPlayback(false);nightVeil.hidden=false;stage.classList.add('lights-out');renderTasks();showToast('The lamps go out and the evening room grows quiet. ☾');refresh()});
+    tvOffButton.addEventListener('click',()=>{if(!tvOn)return;setTvPlayback(false);refresh();showToast('The TV is off. ♡')});
+    window.addEventListener('keydown',e=>{const k=e.key.toLowerCase();if(dirs[k]){held.add(dirs[k]);e.preventDefault()}if(k==='e'||k===' '){e.preventDefault();interact()}});
+    window.addEventListener('keyup',e=>{const k=e.key.toLowerCase();if(dirs[k])held.delete(dirs[k])});window.addEventListener('blur',()=>held.clear());
+    document.querySelectorAll('.dpad button').forEach(b=>{const d=b.dataset.dir;b.addEventListener('pointerdown',e=>{e.preventDefault();b.setPointerCapture(e.pointerId);held.add(d)});['pointerup','pointercancel','lostpointercapture'].forEach(evt=>b.addEventListener(evt,()=>held.delete(d)))});
+    stage.addEventListener('pointerdown',e=>{if(e.target.closest('.marker'))return;stage.focus()});
+    renderTasks();refresh();requestAnimationFrame(frame);
+  </script>
+</body>
+</html>
