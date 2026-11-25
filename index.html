@@ -56,6 +56,9 @@
     .avatar.action-sprite[data-action="tv"]{background-image:url('assets/action-remote.png')}
     .avatar.action-sprite[data-action="medicine"]{background-image:url('assets/action-medicine.png')}
     .avatar.action-sprite[data-action="towels"]{background-image:url('assets/action-towels.png')}
+    .avatar.action-sprite[data-action="hotbag"]{background-image:url('assets/action-hotbag.png')}
+    .avatar.action-sprite[data-action="backmassage"]{background-image:url('assets/action-backmassage.png')}
+    .avatar.action-sprite[data-action="footmassage"]{background-image:url('assets/action-footmassage.png')}
     .avatar.action-sprite[data-action="serve"],.avatar.action-sprite[data-action="feed"]{background-image:url('assets/action-feed.png')}
     .avatar.action-sprite[data-action="arti"]{background-image:url('assets/action-aarti.png')}
     .avatar.action-sprite[data-pose="kiss"]{background-image:url('assets/action-kiss.png')}
@@ -71,6 +74,7 @@
     .tv-playing .tv-off-button{pointer-events:auto}
     .sleeping-couple.visible{animation:sleepingBreath 2.1s ease-in-out infinite alternate}
     @keyframes sleepingBreath{to{transform:translateY(-1px) scale(1.012)}}
+    .set-her-bed{position:absolute;z-index:9;left:39%;top:53%;transform:translate(-50%,-50%);padding:8px 11px;border:1px solid #fffaf2;border-radius:10px;background:#9e5c70ee;color:#fffaf5;font-size:10px;line-height:1.15;font-weight:800;white-space:nowrap;box-shadow:0 3px 9px #33211d45;cursor:pointer}.set-her-bed:hover{background:#874a60;transform:translate(-50%,-52%)}.set-her-bed[hidden]{display:none}
   </style>
 </head>
 <body>
@@ -103,11 +107,15 @@
           <button class="marker entry" data-action="rose" style="left:73%;top:90%" aria-label="Plant a rose for her on the balcony">🌹<span class="marker-label">Grow a rose</span></button>
           <button class="marker entry" data-action="arti" style="left:67%;top:36%" aria-label="Perform puja aarti at the mandir and bring her the blessing">🪔<span class="marker-label">Puja + aarti</span></button>
           <button class="marker ensuite" data-action="escort" style="left:46%;top:38%" aria-label="Take her to the attached bathroom">♡<span class="marker-label">Walk her to the ensuite</span></button>
+          <button class="marker" data-action="hotbag" style="left:19%;top:48%" aria-label="Bring her a warm hot water bag">♨<span class="marker-label">Warm hot water bag</span></button>
+          <button class="marker" data-action="backmassage" style="left:29%;top:42%" aria-label="Massage her back with the warm bag">♡<span class="marker-label">Back massage</span></button>
+          <button class="marker" data-action="footmassage" style="left:40%;top:54%" aria-label="Massage her feet gently">♡<span class="marker-label">Foot massage</span></button>
           <button class="marker" data-action="serve" style="left:37%;top:51%" aria-label="Bring the meal to her bedside">♡<span class="marker-label">Bring her meal</span></button>
           <button class="marker" data-action="feed" style="left:29%;top:55%" aria-label="Feed her a few gentle bites">☼<span class="marker-label">Feed her</span></button>
           <button class="marker" data-action="cuddle" style="left:42%;top:53%" aria-label="Cuddle together in bed">♡<span class="marker-label">Cuddle</span></button>
           <div id="player" class="avatar idle" role="img" aria-label="Your character" style="left:48%;top:48%"></div>
           <div id="carryPair" class="avatar carry-pair" role="img" aria-label="You carrying her gently toward the bathroom" style="left:30%;top:50%"></div>
+          <button id="setHerBedButton" class="set-her-bed" hidden>Set her on the bed</button>
           <div id="activityFx" class="activity-fx" hidden aria-live="polite"><span class="fx-icon" id="fxIcon"></span><span class="fx-copy"><strong id="fxTitle"></strong><small id="fxStep"></small></span><span class="fx-track"><i></i></span></div>
           <div id="girlWalker" class="avatar girl-walker" role="img" aria-label="Her walking beside you" style="left:31%;top:41%"></div>
           <div id="herBed" class="her-bed" aria-label="She is sitting up in bed"></div>
@@ -150,6 +158,9 @@
       {id:'rose',text:'Plant a rose for her',room:'Balcony'},
       {id:'towels',text:'Set out a clean towel',room:'Ensuite'},
       {id:'medicine',text:'Bring water and her usual medicine',room:'Bedroom'},
+      {id:'hotbag',text:'Bring her a warm hot water bag',room:'Bedroom'},
+      {id:'backmassage',text:'Massage her back with the warm bag',room:'Bedroom'},
+      {id:'footmassage',text:'Massage her feet gently',room:'Bedroom'},
       {id:'tv',text:'Play Billie Eilish for her',room:'Lounge'},
       {id:'arti',text:'Perform aarti at the mandir and share the blessing',room:'Mandir'},
       {id:'escort',text:'Carry her to the attached bathroom',room:'Bedroom'},
@@ -171,6 +182,9 @@
       rose:{x:73,y:90,r:6,label:'Plant a rose for her on the balcony',say:'A little rose is growing for her by the balcony rail.'},
       arti:{x:67,y:36,r:6,label:'Perform aarti at the mandir and bring her the blessing',say:'You bring the aarti blessing to her, then offer her water.'},
       escort:{x:46,y:38,r:6,label:'Carry her gently to the attached bathroom',say:'You carry her safely to the ensuite, then wait just outside.'},
+      hotbag:{x:19,y:48,r:6,label:'Bring her a warm hot water bag',say:'Her warm hot water bag is ready beside her.'},
+      backmassage:{x:29,y:42,r:6,label:'Massage her back with the warm bag',say:'You massage her back gently with the warm bag.'},
+      footmassage:{x:40,y:54,r:6,label:'Massage her feet gently',say:'You massage her feet gently and tuck the blanket back.'},
       serve:{x:37,y:51,r:6,label:'Bring the warm meal to her bedside',say:'You settle the soup, fruit and water by her bed.'},
       feed:{x:29,y:55,r:5.5,label:'Feed her a few gentle bites',say:'She opens her mouth for a little spoonful.'},
       cuddle:{x:42,y:53,r:6.5,label:'Get into bed and cuddle',say:'You cuddle close under the blanket, and you both drift into a peaceful sleep.'}
@@ -200,6 +214,9 @@
       rose:{title:'Planting a rose for her',steps:[['🪴','Prepare the balcony pot'],['🌱','Plant a little rose'],['💧','Water it gently'],['🌹','Leave it blooming for her']]},
       towels:{title:'Setting out a fresh towel',steps:[['🧺','Fold a clean towel'],['⌁','Place it in the ensuite']]},
       medicine:{title:'Bringing her medicine',steps:[['🥛','Pour a glass of water'],['✚','Set out her usual medicine']]},
+      hotbag:{title:'Bringing her hot water bag',steps:[['♨️','Fill the hot water bag'],['🧣','Wrap it in a soft cover'],['🚶','Bring it to her bedside'],['♡','Set it down gently']]},
+      backmassage:{title:'Gently warming her back',steps:[['🛏️','Help her settle comfortably'],['♨️','Place the warm bag over the blanket'],['♡','Massage her back gently'],['✧','Check she feels comfortable']]},
+      footmassage:{title:'Massaging her feet',steps:[['🪑','Sit close beside the bed'],['👐','Warm your hands'],['♡','Massage her feet gently'],['🛏️','Tuck the blanket back']]},
       tv:{title:'Playing Billie Eilish for her',steps:[['▣','Turn on the TV'],['♪','Choose Billie Eilish'],['♫','Play “Ocean Eyes” softly']]},
       escort:{title:'Lifting her gently',steps:[['♡','Help her sit up'],['🫶','Lift her into your arms'],['🚶','Carry her securely'],['🚪','Head to the ensuite']]},
       serve:{title:'Bringing her meal to bed',steps:[['🍲','Carry the warm tray'],['♡','Set it beside her']]},
@@ -208,7 +225,7 @@
       cuddle:{title:'Cuddling close',steps:[['♡','Get cozy side by side'],['🛏️','Settle under the blanket'],['☾','Drift off to sleep']]}
     };
     const activityDuration=5000;
-    const actionSprites={cook:'cook',dishes:'dishes',vacuum:'vacuum',laundry:'laundry',fruit:'fruit',juice:'juice',order:'phone',tv:'remote',medicine:'medicine',towels:'towels',serve:'feed',feed:'feed',rose:'rose',arti:'aarti'};
+    const actionSprites={cook:'cook',dishes:'dishes',vacuum:'vacuum',laundry:'laundry',fruit:'fruit',juice:'juice',order:'phone',tv:'remote',medicine:'medicine',towels:'towels',hotbag:'hotbag',backmassage:'backmassage',footmassage:'footmassage',serve:'feed',feed:'feed',rose:'rose',arti:'aarti'};
     const state=Object.fromEntries(tasks.map(t=>[t.id,false]));state.cuddle=false;state.lightsOff=false;
     const stage=document.getElementById('stage'),mapImage=document.getElementById('mapImage'),player=document.getElementById('player'),girl=document.getElementById('girlWalker'),carryPair=document.getElementById('carryPair'),herBed=document.getElementById('herBed'),portrait=document.getElementById('portrait');
     const actionCopy=document.getElementById('actionCopy'),interactBtn=document.getElementById('interactBtn'),activityFx=document.getElementById('activityFx'),fxIcon=document.getElementById('fxIcon'),fxTitle=document.getElementById('fxTitle'),fxStep=document.getElementById('fxStep');
@@ -240,10 +257,17 @@
       if(activeAction){const anchor=zones[activeAction]||p;activityFx.dataset.action=activeAction;activityFx.style.left=`${Math.min(88,Math.max(12,anchor.x))}%`;activityFx.style.top=`${Math.max(16,anchor.y-9)}%`;activityFx.hidden=false;activityFx.classList.add('visible')}else{activityFx.hidden=true;activityFx.classList.remove('visible')}
       roseBloom.hidden=!state.rose;deliveryScene.hidden=activeAction!=='delivery';deliveryHandoff.hidden=!handoffVisual;handoffBag.hidden=handoffVisual;const courierFigure=deliveryScene.querySelector('.courier-figure');courierFigure.hidden=handoffVisual;if(activeAction==='delivery'){deliveryScene.dataset.step=String(activityStepIndex);deliveryHandoff.style.backgroundPosition=`${walkFrame*100/3}% 0%`}
       tvPlaying.hidden=!(tvOn||activeAction==='tv')||mode==='sleeping'||state.lightsOff;tvOffButton.hidden=!tvOn;nightVeil.hidden=!state.lightsOff;stage.classList.toggle('lights-out',state.lightsOff);
-      blessingGlow.hidden=!(activeAction==='arti'&&activityStepIndex>=2);const allCareDone=tasks.every(t=>state[t.id]);const carryingMode=mode==='carrying'||mode==='carryingBack'||mode==='private';document.querySelectorAll('.marker').forEach(el=>{const id=el.dataset.action;let available=!activeAction&&!carryingMode&&!state[id];if(id==='tv')available=!activeAction&&!carryingMode&&mode!=='sleeping'&&!state.lightsOff&&(!state.tv||!tvOn);if(id==='delivery')available=!activeAction&&!carryingMode&&state.order&&!state.delivery;if(id==='escort')available=!activeAction&&!carryingMode&&!state.escort&&(mode==='resting'||mode==='sitting');if(id==='serve')available=!activeAction&&!carryingMode&&state.cook&&state.fruit&&state.juice&&state.medicine&&!state.serve;if(id==='feed')available=!activeAction&&!carryingMode&&state.serve&&!state.feed&&mode==='sitting';if(id==='cuddle')available=!activeAction&&!carryingMode&&allCareDone&&!state.cuddle;el.hidden=!available;if(id==='tv'){el.setAttribute('aria-label',state.tv?'Turn the TV on for her':'Play a Billie Eilish song for her');el.querySelector('.marker-label').textContent=state.tv?'Turn the TV on':'Billie Eilish on TV'}});
+      blessingGlow.hidden=!(activeAction==='arti'&&activityStepIndex>=2);const allCareDone=tasks.every(t=>state[t.id]);const carryingMode=mode==='carrying'||mode==='carryingBack'||mode==='private';document.getElementById('setHerBedButton').hidden=mode!=='carryingBack';document.querySelectorAll('.marker').forEach(el=>{const id=el.dataset.action;let available=!activeAction&&!carryingMode&&!state[id];if(id==='tv')available=!activeAction&&!carryingMode&&mode!=='sleeping'&&!state.lightsOff&&(!state.tv||!tvOn);if(id==='delivery')available=!activeAction&&!carryingMode&&state.order&&!state.delivery;if(id==='escort')available=!activeAction&&!carryingMode&&!state.escort&&(mode==='resting'||mode==='sitting');if(id==='serve')available=!activeAction&&!carryingMode&&state.cook&&state.fruit&&state.juice&&state.medicine&&!state.serve;if(id==='feed')available=!activeAction&&!carryingMode&&state.serve&&!state.feed&&mode==='sitting';if(id==='cuddle')available=!activeAction&&!carryingMode&&allCareDone&&!state.cuddle;el.hidden=!available;if(id==='tv'){el.setAttribute('aria-label',state.tv?'Turn the TV on for her':'Play a Billie Eilish song for her');el.querySelector('.marker-label').textContent=state.tv?'Turn the TV on':'Billie Eilish on TV'}});
+      const caringAtBed=mode==='resting'||mode==='sitting';
+      document.querySelectorAll('.marker[data-action="hotbag"]').forEach(el=>el.hidden=activeAction||carryingMode||state.hotbag||!caringAtBed);
+      document.querySelectorAll('.marker[data-action="backmassage"]').forEach(el=>el.hidden=activeAction||carryingMode||!state.hotbag||state.backmassage||!caringAtBed);
+      document.querySelectorAll('.marker[data-action="footmassage"]').forEach(el=>el.hidden=activeAction||carryingMode||state.footmassage||!caringAtBed);
       const candidates=Object.entries(zones).filter(([id])=>{
         if(activeAction||carryingMode)return false;
         if(id==='cuddle')return tasks.every(t=>state[t.id])&&!state.cuddle;
+        if(id==='hotbag')return !state.hotbag&&caringAtBed;
+        if(id==='backmassage')return state.hotbag&&!state.backmassage&&caringAtBed;
+        if(id==='footmassage')return !state.footmassage&&caringAtBed;
         if(id==='tv')return !state.tv||!tvOn;
         if(id==='feed')return state.serve&&!state.feed&&mode==='sitting';
         if(id==='serve')return state.cook&&state.fruit&&state.juice&&state.medicine&&!state.serve&&mode!=='carrying';
@@ -252,10 +276,10 @@
         return !state[id];
       }).map(([id,z])=>({id,z,d:distancePx(p,z)})).filter(v=>v.d<zones[v.id].r*stage.getBoundingClientRect().width/100).sort((a,b)=>a.d-b.d);
       nearest=candidates[0]?.id||null;
-      const text=activeAction?'':mode==='private'?'She’s ready to leave the ensuite. Use the button to pick her up, then carry her back to bed.':mode==='carrying'?'You’re carrying her to the ensuite. Use WASD or the arrows.':mode==='carryingBack'?'You’re carrying her back. Guide her to the bedside with WASD or the arrows.':nearest?zones[nearest].label:'Walk around and look for a glowing marker.';
+      const text=activeAction?'':mode==='private'?'She’s ready to leave the ensuite. Use the button to pick her up, then carry her back to bed.':mode==='carrying'?'You’re carrying her to the ensuite. Use WASD or the arrows.':mode==='carryingBack'?'You’re carrying her back. Move toward the bed, or press the button to settle her there now.':nearest?zones[nearest].label:'Walk around and look for a glowing marker.';
       actionCopy.textContent=text;
-      const cuddleReady=allCareDone&&!state.cuddle&&!carryingMode&&mode!=='sleeping';const enabled=mode==='private'||cuddleReady||(Boolean(nearest)&&!(nearest==='serve'&&!(state.cook&&state.fruit&&state.juice&&state.medicine)));
-      interactBtn.disabled=Boolean(activeAction)||!enabled;interactBtn.textContent=activeAction?'In progress…':mode==='private'?'Carry her back to bed':cuddleReady?'Cuddle & sleep':nearest?(nearest==='cuddle'?'Get cozy':nearest==='escort'?'Carry her':nearest==='tv'&&state.tv?'Turn TV on':'Interact · E'):'Nothing nearby';
+      const cuddleReady=allCareDone&&!state.cuddle&&!carryingMode&&mode!=='sleeping';const enabled=mode==='private'||mode==='carryingBack'||cuddleReady||(Boolean(nearest)&&!(nearest==='serve'&&!(state.cook&&state.fruit&&state.juice&&state.medicine)));
+      interactBtn.disabled=Boolean(activeAction)||!enabled;interactBtn.textContent=activeAction?'In progress…':mode==='private'?'Carry her back to bed':mode==='carryingBack'?'Set her on the bed':cuddleReady?'Cuddle & sleep':nearest?(nearest==='cuddle'?'Get cozy':nearest==='escort'?'Carry her':nearest==='tv'&&state.tv?'Turn TV on':'Interact · E'):'Nothing nearby';
       document.querySelectorAll('.marker').forEach(el=>el.classList.toggle('active',el.dataset.action===nearest));
       document.getElementById('moodTitle').textContent=mode==='resting'?'She’s resting':mode==='carrying'?'You’re carrying her':mode==='carryingBack'?'Carrying her back to bed':mode==='private'?'She’s in the ensuite':mode==='sitting'?'She’s sitting up':mode==='sleeping'?'Sleeping together':'Feeling cared for';
       document.getElementById('moodSub').textContent=mode==='resting'?'Sad, tired, and uncomfortable. Keep things gentle.':mode==='carrying'?'She rests in your arms while you guide her to the attached bathroom.':mode==='carryingBack'?'Guide her gently back to the bed with WASD or the arrow keys.':mode==='private'?'She’s finished in the ensuite. Pick her up and carry her back to bed when you’re ready.':mode==='sitting'?'She’s upright in bed, ready for a few bites.':mode==='sleeping'?'You both drift off together beneath the blanket.':'She can rest now; you’re beside her.';
@@ -274,6 +298,9 @@
       const sequence=actionAnimations[id];if(!sequence||activeAction)return;
       activeAction=id;activityStepIndex=0;walkFrame=0;activityFrameClock=0;activityPath=[];activityPathIndex=0;target=null;route=[];held.clear();activityFx.dataset.action=id;activityFx.style.setProperty('--activity-duration',`${activityDuration}ms`);
       if(id==='escort'){p={x:27,y:49};player.dataset.dir='right'}
+      if(id==='hotbag'){p={x:24,y:49};player.dataset.dir='right'}
+      if(id==='backmassage'){p={x:30,y:48};player.dataset.dir='left'}
+      if(id==='footmassage'){p={x:38,y:52};player.dataset.dir='left'}
       if(id==='serve'||id==='feed'){p={x:id==='feed'?34:36,y:54};player.dataset.dir='left';player.dataset.row='0'}
       if(id==='vacuum')activityPath=[{x:45,y:77},{x:34,y:76},{x:29,y:68},{x:41,y:65},{x:48,y:72}];
       if(id==='feed'){herBed.classList.remove('open-mouth');portrait.style.backgroundPosition='0% 0%'}
@@ -310,7 +337,8 @@
       });
     }
     function beginCarryBack(){if(mode!=='private')return;mode='carryingBack';p={x:46,y:34};target=null;route=[];held.clear();player.dataset.dir='left';showToast('You gently lift her. Carry her back to bed with WASD or the arrows.');refresh()}
-    function interact(){if(mode==='carrying'||mode==='carryingBack'||mode==='sleeping')return;if(mode==='private'){beginCarryBack();return}if(tasks.every(t=>state[t.id])&&!state.cuddle){goTo('cuddle');return}if(nearest&&!activeAction)doAction(nearest)}
+    function settleHerOnBed(){if(mode!=='carryingBack')return;mode='resting';p={x:34,y:53};target=null;route=[];held.clear();renderTasks();showToast('She’s back on the bed. Continue a chore, or bring her meal when it’s ready.');refresh()}
+    function interact(){if(mode==='carryingBack'){settleHerOnBed();return}if(mode==='carrying'||mode==='sleeping')return;if(mode==='private'){beginCarryBack();return}if(tasks.every(t=>state[t.id])&&!state.cuddle){goTo('cuddle');return}if(nearest&&!activeAction)doAction(nearest)}
     function moveTowardTarget(dt){if(!target)return false;const r=stage.getBoundingClientRect(),dx=(target.x-p.x)*r.width/100,dy=(target.y-p.y)*r.height/100,d=Math.hypot(dx,dy);if(d<4){target=route.length?route.shift():null;return Boolean(target)}const step=Math.min(d,speed*dt),nx=p.x+dx/d*step/r.width*100,ny=p.y+dy/d*step/r.height*100;if(!blocked(nx,ny)){p={x:nx,y:ny};player.dataset.dir=Math.abs(dx)>Math.abs(dy)?(dx<0?'left':'right'):(dy<0?'up':'down');player.dataset.row=Math.abs(dx)>Math.abs(dy)?'1':'0'}else{target=null;route=[]}return true}
     function moveAlongActivityPath(dt){if(activityPathIndex>=activityPath.length)return false;const z=activityPath[activityPathIndex],r=stage.getBoundingClientRect(),dx=(z.x-p.x)*r.width/100,dy=(z.y-p.y)*r.height/100,d=Math.hypot(dx,dy);if(d<2.5){activityPathIndex++;return activityPathIndex<activityPath.length}const step=Math.min(d,speed*.85*dt),nx=p.x+dx/d*step/r.width*100,ny=p.y+dy/d*step/r.height*100;p={x:nx,y:ny};player.dataset.dir=Math.abs(dx)>Math.abs(dy)?(dx<0?'left':'right'):(dy<0?'up':'down');player.dataset.row=Math.abs(dx)>Math.abs(dy)?'1':'0';return true}
     function frame(now){
@@ -320,8 +348,9 @@
       else if(!activeAction&&(dx||dy)){target=null;route=[];const len=Math.hypot(dx,dy),nx=Math.max(3,Math.min(97,p.x+dx/len*speed*dt/r.width*100)),ny=Math.max(4,Math.min(96,p.y+dy/len*speed*dt/r.height*100));if(!blocked(nx,ny))p={x:nx,y:ny};player.dataset.dir=dx<0?'left':dx>0?'right':dy<0?'up':'down';player.dataset.row=(dx!==0?'1':'0');walking=true}
       else if(!activeAction&&moveTowardTarget(dt)){walking=true}
       if(walking||activeAction){frameClock+=dt;if(frameClock>.18){walkFrame=(walkFrame+1)%4;frameClock=0}}else{walkFrame=0}
-      if(mode==='carrying'&&distancePx(p,{x:46,y:34})<4.2){state.escort=true;mode='private';target=null;route=[];held.clear();renderTasks();showToast('She’s in the attached bathroom. When she’s ready, use “Carry her back to bed.”');refresh()}
-      if(mode==='carryingBack'&&distancePx(p,{x:34,y:53})<4.2){mode='resting';p={x:34,y:53};target=null;route=[];held.clear();renderTasks();showToast('You’ve settled her safely back on the bed under the blanket.');refresh()}
+      const arrivalRadius=6*stage.getBoundingClientRect().width/100;
+      if(mode==='carrying'&&distancePx(p,{x:46,y:34})<arrivalRadius){state.escort=true;mode='private';target=null;route=[];held.clear();renderTasks();showToast('She’s in the attached bathroom. When she’s ready, use “Carry her back to bed.”');refresh()}
+      if(mode==='carryingBack'&&distancePx(p,{x:34,y:53})<arrivalRadius)settleHerOnBed();
       refresh();requestAnimationFrame(frame);
     }
     function goTo(id){
@@ -334,6 +363,7 @@
     }
     document.querySelectorAll('.marker').forEach(el=>el.addEventListener('click',()=>goTo(el.dataset.action)));
     interactBtn.addEventListener('click',interact);
+    document.getElementById('setHerBedButton').addEventListener('click',settleHerOnBed);
     lightsOffButton.addEventListener('click',()=>{if(!state.cuddle||state.lightsOff)return;state.lightsOff=true;setTvPlayback(false);nightVeil.hidden=false;stage.classList.add('lights-out');renderTasks();showToast('The lamps go out and the evening room grows quiet. ☾');refresh()});
     tvOffButton.addEventListener('click',()=>{if(!tvOn)return;setTvPlayback(false);refresh();showToast('The TV is off. ♡')});
     window.addEventListener('keydown',e=>{const k=e.key.toLowerCase();if(dirs[k]){held.add(dirs[k]);e.preventDefault()}if(k==='e'||k===' '){e.preventDefault();interact()}});
